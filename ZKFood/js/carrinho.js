@@ -23,6 +23,7 @@ async function listarProdutos(eEntrega) {
     const divListagemProdutos = document.getElementById('listagemProdutos');
     divListagemProdutos.innerHTML = '';
 
+
     for (const item of pedidosCarrinho) {
 
         const produto = await new FetchBuilder().request(`${ambiente.local}${prefix.produtos}/${item.id}`);
@@ -132,14 +133,20 @@ async function diminuir(id) {
 
 async function continuar() {
     const radios = document.getElementsByName('entrega');
+    const horario = (new Date().getHours).toString
 
+    function esperar(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      }
+    
+if (horario == "11" || horario == "16") {
     let selectedOption;
     radios.forEach((radio) => {
         if (radio.checked) {
             selectedOption = radio.value;
         }
     });
-
+    
     if (selectedOption === undefined) {
         exibirPopup("Escolha um tipo de entrega antes de prosseguir...", "erro")
         return;
@@ -150,6 +157,13 @@ async function continuar() {
         sessionStorage.setItem('TIPO_ENTREGA_CARRINHO', selectedOption);
         window.location = './endereco.html';
     }
+}else{
+    exibirPopup("Estamos fora do horário de funcionamento", "erro")
+    await esperar(2000); 
+    window.location = './home_pos_login.html'
+}
+
+  
 }
 
 window.onload = async function () {
